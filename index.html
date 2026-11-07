@@ -161,14 +161,14 @@ footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-
   </section>
 
   <section aria-labelledby="dl" style="display:grid;gap:14px">
-    <div class="head"><h2 id="dl">Downloads</h2><span class="rule"></span><span class="note">Windows 10 / 11, 64-bit</span></div>
+    <div class="head"><h2 id="dl">Downloads</h2><span class="rule"></span><span class="note">Windows 10 / 11, 64-bit &middot; Android 12+</span></div>
     <div class="grid" id="grid"></div>
   </section>
 
   <section aria-labelledby="faq" style="display:grid;gap:14px">
     <div class="head"><h2 id="faq">Good to know</h2><span class="rule"></span></div>
     <div class="notes">
-      <div class="note-box"><h3>Where files go</h3><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit goes to <code>%LOCALAPPDATA%\Programs\SADA ETABS Toolkit</code>. Struct Helper PC is portable: it runs from wherever you unzip it.</p></div>
+      <div class="note-box"><h3>Where files go</h3><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit goes to <code>%LOCALAPPDATA%\Programs\SADA ETABS Toolkit</code>. Struct Helper PC is portable: it runs from wherever you unzip it. The Android app installs like any APK.</p></div>
       <div class="note-box"><h3>Updating</h3><p>Run the newer setup file over the old one. Your activation key and settings are kept.</p></div>
       <div class="note-box"><h3>Removing</h3><p>Windows Settings &gt; Apps &gt; Installed apps, find the SADA tool, Uninstall. Close Revit first.</p></div>
       <div class="note-box"><h3>Activation keys</h3><p>Struct, Steel and Arch are activated separately. The Parapet Tool uses the Struct key. The ETABS Toolkit needs no key.</p></div>
@@ -207,7 +207,11 @@ var ITEMS = [
   { code: "H-01", name: "SADA Struct Helper PC", file: "SADA_Struct_Helper_PC_Portable.zip", size: "87.9 MB", version: "2.0.0",
     desc: "Desktop engineering calculator: Casio-style scientific calculator (equations, matrix, vector, complex, stats, base-N) plus 26 structural tools for concrete, steel, foundations, loads, estimating and code tables. Portable: unzip and run, Java included.",
     tags: ["Windows 10 / 11", "Portable"], where: "Unzip anywhere, run \"SADAStruct Helper PC.exe\"", btn: "Download zip",
-    sha: "9989177996403b2a968a8c32ef19c78fe907b584f621d75b113be78b48f1b419", badge: "New" }
+    sha: "9989177996403b2a968a8c32ef19c78fe907b584f621d75b113be78b48f1b419", badge: "New" },
+  { code: "H-02", name: "SADA Struct Helper Android", file: "SADA_Struct_Helper_Android.apk", size: "47.0 MB", version: "2.0",
+    desc: "The same calculator and 26 structural tools on your phone, plus PDF calculation reports and the AI calculator builder (needs a Gemini API key).",
+    tags: ["Android 12+", "APK"], where: "Open the APK on your phone and allow \"Install unknown apps\"", btn: "Download APK",
+    sha: "5774f2eda9988ba68a5747eb69ce4c18efc6f4562df9641d83cf16c6755a674d", badge: "New" }
 ];
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 document.getElementById("grid").innerHTML = ITEMS.map(function (a) {
