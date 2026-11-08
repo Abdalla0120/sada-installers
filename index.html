@@ -168,10 +168,10 @@ footer { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-
   <section aria-labelledby="faq" style="display:grid;gap:14px">
     <div class="head"><h2 id="faq">Good to know</h2><span class="rule"></span></div>
     <div class="notes">
-      <div class="note-box"><h3>Where files go</h3><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit goes to <code>%LOCALAPPDATA%\Programs\SADA ETABS Toolkit</code>. Struct Helper PC is portable: it runs from wherever you unzip it. The Android app installs like any APK.</p></div>
+      <div class="note-box"><h3>Where files go</h3><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit and File Renamer Pro go to <code>%LOCALAPPDATA%\Programs</code>. Struct Helper PC is portable: it runs from wherever you unzip it. The Android app installs like any APK.</p></div>
       <div class="note-box"><h3>Updating</h3><p>Run the newer setup file over the old one. Your activation key and settings are kept.</p></div>
       <div class="note-box"><h3>Removing</h3><p>Windows Settings &gt; Apps &gt; Installed apps, find the SADA tool, Uninstall. Close Revit first.</p></div>
-      <div class="note-box"><h3>Activation keys</h3><p>Struct, Steel and Arch are activated separately. The Parapet Tool uses the Struct key. The ETABS Toolkit needs no key.</p></div>
+      <div class="note-box"><h3>Activation keys</h3><p>Struct, Steel and Arch are activated separately. The Parapet Tool uses the Struct key. The ETABS Toolkit and File Renamer Pro need no key.</p></div>
     </div>
   </section>
 
@@ -211,7 +211,11 @@ var ITEMS = [
   { code: "H-02", name: "SADA Struct Helper Android", file: "SADA_Struct_Helper_Android.apk", size: "47.0 MB", version: "2.0",
     desc: "The same calculator and 26 structural tools on your phone, plus PDF calculation reports and the AI calculator builder (needs a Gemini API key).",
     tags: ["Android 12+", "APK"], where: "Open the APK on your phone and allow \"Install unknown apps\"", btn: "Download APK",
-    sha: "5774f2eda9988ba68a5747eb69ce4c18efc6f4562df9641d83cf16c6755a674d", badge: "New" }
+    sha: "5774f2eda9988ba68a5747eb69ce4c18efc6f4562df9641d83cf16c6755a674d", badge: "New" },
+  { code: "U-01", name: "File Renamer Pro", file: "SADA_File_Renamer_Pro_Setup.exe", size: "2.1 MB", version: "2.0.0",
+    desc: "Bulk-rename drawings and files: the name is split into parts (SD-ST-ZA-P1-…) and you change only the parts you pick. Live preview, duplicate checks, presets and undo. Adds a right-click \"Rename files\" entry on folders.",
+    tags: ["Windows 10 / 11"], where: "%LOCALAPPDATA%\\Programs\\File Renamer Pro",
+    sha: "a2ebdb6a5d27592b1fb8447852c6b7361317ee0a6f6882d215f3e8604ab91fa8", badge: "New" }
 ];
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 document.getElementById("grid").innerHTML = ITEMS.map(function (a) {
