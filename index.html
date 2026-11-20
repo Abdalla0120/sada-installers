@@ -439,7 +439,12 @@ var ITEMS = [
     desc: "Fast downloads over many connections with crash-safe resume, videos, torrents, schedules and a browser extension for Chrome, Edge, Brave and Firefox. No accounts, no tracking. Password needed to download.",
     compat: ["Windows 10 / 11", "Chrome / Edge / Firefox"], where: "%LOCALAPPDATA%\\Programs\\SADA Download",
     sha: "0c86340615aafdb6b8dfc31f417d83c5a51d5241a1b9e1b354da2491f59e1b52", badge: "New",
-    locked: { enc: "dl/SADA_Download_Setup.exe.sada", source: "dl/SADA_Download_source_0.5.2.zip.sada", sourceName: "SADA_Download_source_0.5.2.zip" } }
+    locked: { enc: "dl/SADA_Download_Setup.exe.sada", source: "dl/SADA_Download_source_0.5.2.zip.sada", sourceName: "SADA_Download_source_0.5.2.zip" } },
+  { name: "SADA Download for Android", group: "apps", icon: "download", kind: "Android app", file: "SADA_Download_Android.apk", size: "66.2 MB", version: "0.1.0",
+    desc: "Fast downloads over many connections with resume, a built-in browser that finds videos (YouTube included) with ad and pop-up blocking, and Send to PC for SADA Download on Windows. Password needed to download.",
+    compat: ["Android 8+"], where: "Open the APK on your phone and allow \"Install unknown apps\"",
+    sha: "876b1ab5f6ea09ce23a05f0c02c87ee1b6e73a619fa6e49bf8551d0afb03bccf", badge: "New",
+    locked: { enc: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return "dl/SADA_Download_Android.apk.sada." + n; }), source: "dl/SADA_Download_Android_source_0.1.0.zip.sada", sourceName: "SADA_Download_Android_source_0.1.0.zip" } }
 ];
 var GROUP_LABEL = {}; GROUPS.forEach(function (g) { GROUP_LABEL[g.id] = g.label; });
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -480,10 +485,16 @@ function lockedFoot(a, i) {
 }
 var ITER = 310000;
 async function openLocked(url, pw, onStep) {
-  onStep("Downloading...");
-  var r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error("The file could not be fetched (" + r.status + ").");
-  var data = new Uint8Array(await r.arrayBuffer());
+  // A big file is stored in parts (each small enough to push); they are joined before the check.
+  var parts = [].concat(url), bufs = [], total = 0;
+  for (var k = 0; k < parts.length; k++) {
+    onStep(parts.length > 1 ? "Downloading... part " + (k + 1) + " of " + parts.length : "Downloading...");
+    var r = await fetch(parts[k], { cache: "no-store" });
+    if (!r.ok) throw new Error("The file could not be fetched (" + r.status + ").");
+    var b = new Uint8Array(await r.arrayBuffer()); bufs.push(b); total += b.length;
+  }
+  var data = bufs.length === 1 ? bufs[0] : new Uint8Array(total);
+  if (bufs.length > 1) { var at = 0; bufs.forEach(function (b) { data.set(b, at); at += b.length; }); bufs = null; }
   if (String.fromCharCode.apply(null, data.subarray(0, 5)) !== "SADA1" || data.length < 5 + 32 + 32) throw new Error("The file is damaged.");
   var salt = data.subarray(5, 21), iv = data.subarray(21, 37), body = data.subarray(5, data.length - 32), tag = data.subarray(data.length - 32);
   onStep("Checking the password...");
