@@ -134,6 +134,18 @@ section { scroll-margin-top: 80px; }
 .search input { width: 100%; height: 42px; font: 14px var(--font-sans); padding: 0 12px 0 36px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 10px; }
 .search input::placeholder { color: var(--muted); }
 .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+[hidden] { display: none !important; } /* .tool is display:flex, which otherwise beats the hidden attribute */
+.top-search { position: relative; flex: 0 0 230px; }
+.top-search input { width: 100%; height: 36px; font: 13.5px var(--font-sans); padding: 0 34px 0 32px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 9px; }
+.top-search input::placeholder { color: var(--muted); }
+.top-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.top-search kbd { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font: 11px var(--font-mono); color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; pointer-events: none; }
+.top-search input:focus + kbd, .top-search input:not(:placeholder-shown) + kbd { display: none; }
+.search input[type="search"]::-webkit-search-cancel-button, .top-search input::-webkit-search-cancel-button { cursor: pointer; }
+.result { margin: -6px 0 16px; font-size: 13.5px; color: var(--muted); }
+.result strong { color: var(--fg); font-weight: 600; }
+.linkbtn { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.tool mark { background: color-mix(in srgb, var(--accent) 16%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
 
 /* tool cards */
 .tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
@@ -193,6 +205,7 @@ footer a:hover { color: var(--fg); }
 @media (max-width: 760px) {
   .tools, .faq { grid-template-columns: minmax(0, 1fr); }
   .nav a:not(.keep) { display: none; }
+  .top-search { display: none; }
   .search { margin-left: 0; flex: 1 1 100%; }
   .band { padding-block: 48px; }
   .section-head h2 { font-size: 26px; }
@@ -229,6 +242,11 @@ footer a:hover { color: var(--fg); }
       <a href="#install">Installation</a>
       <a href="#faq">FAQ</a>
     </nav>
+    <label class="top-search" for="tq">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="tq" type="search" placeholder="Search tools" aria-label="Search tools" autocomplete="off">
+      <kbd aria-hidden="true">/</kbd>
+    </label>
   </div>
 </header>
 
@@ -329,11 +347,12 @@ footer a:hover { color: var(--fg); }
         <div class="seg" role="group" aria-label="Filter by category" id="filters"></div>
         <label class="search" for="q">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <input id="q" type="search" placeholder="Search tools or a Revit year" aria-label="Search tools" autocomplete="off">
+          <input id="q" type="search" placeholder="Search tools, features or a Revit year" aria-label="Search tools" autocomplete="off">
         </label>
       </div>
+      <p class="result" id="result" role="status" aria-live="polite" hidden></p>
       <div class="tools" id="list"></div>
-      <div class="empty" id="empty" hidden>No tool matches that search. Try a product name or a year such as 2025.</div>
+      <div class="empty" id="empty" hidden>No tool matches that search. Try a product name, a feature such as <em>dimensions</em> or <em>lisp</em>, or a year such as 2025. <button type="button" class="linkbtn" data-clear>Clear search</button></div>
     </div>
   </section>
 
@@ -456,16 +475,42 @@ var ITEMS = [
     sha: "1c15eb0ab5700f7f5e50c2b0a652aa8958534585b444a53429ca9e250f774e7d", badge: "Updated",
     locked: { enc: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return "dl/SADA_Download_Android_0.2.0.apk.sada." + n; }), source: "dl/SADA_Download_Android_source_0.2.0.zip.sada", sourceName: "SADA_Download_Android_source_0.2.0.zip" } }
 ];
+// Extra search words per tool (features, file types and other words people type), not shown on the cards.
+var TAGS = {
+  "SADA Struct Toolbox": "concrete dimension dimensions columns beams grids foundations footings walls selector alignment spell check link builder batch export model checks rebar ribbon",
+  "SADA Steel Toolbox": "steel dimensions piece marks takeoff quantities aisc ec3 eurocode member check sap2000 export spell",
+  "SADA Arch Toolbox": "architecture rooms finishes doors windows marks elevations sheets walls cad lines excel enlarged plans model health",
+  "SADA Parapet Tool": "parapet posts beams roof linked model",
+  "SADA ETABS Toolkit": "etabs sap2000 s2k slabs beams bays connectivity analysis model",
+  "SADA SD Labeller": "autocad key plan column sheet sd rft pdf lisp autolisp labels text tower",
+  "SADA Lisp Injector": "autocad lisp autolisp lsp fas vlx routines commands favourite favourites favorite favorites autoload auto load startup appload acaddoc every drawing search description virus civil 3d",
+  "SADA Struct Helper PC": "calculator scientific equations matrices complex statistics concrete steel foundations loads estimating portable zip",
+  "SADA Struct Helper Android": "phone mobile apk calculator pdf reports ai gemini android",
+  "File Renamer Pro": "rename renamer files drawings bulk batch sheet numbers parts undo preview",
+  "SADA Download": "download manager downloader torrent video youtube resume browser extension chrome edge firefox",
+  "SADA Download for Android": "download manager downloader video youtube mp3 subtitles playlists ad blocker browser phone apk"
+};
 var GROUP_LABEL = {}; GROUPS.forEach(function (g) { GROUP_LABEL[g.id] = g.label; });
+// lower-case, punctuation to spaces: "File-Renamer" and "file renamer" match the same way
+function norm(s) { return String(s).toLowerCase().replace(/[^a-z0-9؀-ۿ]+/g, " ").trim(); }
+function terms(q) { return norm(q).split(" ").filter(Boolean); }
+function escRx(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+function mark(text, words) {
+  var h = esc(text);
+  if (!words.length) return h;
+  var rx = new RegExp("(" + words.map(function (w) { return escRx(esc(w)); }).sort(function (a, b) { return b.length - a.length; }).join("|") + ")", "gi");
+  // only outside HTML entities/tags (esc() output has no tags, entities are short)
+  return h.split(/(&[a-z]+;)/).map(function (part) { return /^&[a-z]+;$/.test(part) ? part : part.replace(rx, "<mark>$1</mark>"); }).join("");
+}
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 var DL_ICON = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2.5v7.5m0 0L5 7m3 3l3-3M3 13h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 function card(a, i) {
   var badge = a.badge ? '<span class="badge' + (a.badge === "Updated" ? " updated" : "") + '">' + esc(a.badge) + '</span>' : "";
-  var search = [a.name, a.kind, a.desc, a.file, GROUP_LABEL[a.group]].concat(a.compat).join(" ").toLowerCase();
+  var search = norm([a.name, a.kind, a.desc, a.file, GROUP_LABEL[a.group], TAGS[a.name] || "", a.badge || ""].concat(a.compat).join(" "));
   if (/revit 2023 to 2027/.test(search)) search += " 2023 2024 2025 2026 2027";
   if (/revit 2023 to 2025/.test(search)) search += " 2023 2024 2025";
-  return '<article class="tool" data-group="' + a.group + '" data-search="' + esc(search) + '">' +
+  return '<article class="tool" data-i="' + i + '" data-group="' + a.group + '" data-search=" ' + esc(search) + ' ">' +
     '<div class="tool-head"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">' + ICONS[a.icon] + '</svg></span>' +
       '<div class="tool-id"><h3>' + esc(a.name) + '</h3><div class="kind">' + esc(a.kind) + ' &middot; v' + esc(a.version) + '</div></div>' + badge + '</div>' +
     '<p class="desc">' + esc(a.desc) + '</p>' +
@@ -539,29 +584,76 @@ document.addEventListener("submit", function (e) { var f = e.target.closest("[da
 document.addEventListener("click", function (e) { var b = e.target.closest("[data-src]"); if (!b) return; unlock(b.closest("[data-lock]"), "source"); });
 
 var active = "all";
+var qBox = document.getElementById("q"), tqBox = document.getElementById("tq");
+// a tool matches when every typed word appears somewhere in its text (any order, start of a word or inside it)
+function matches(c, words) { var s = c.getAttribute("data-search"); return words.every(function (w) { return s.indexOf(w) !== -1; }); }
 function renderFilters() {
+  var words = terms(qBox.value), cards = [].slice.call(document.querySelectorAll("#list .tool"));
   var opts = [{ id: "all", label: "All" }].concat(GROUPS);
   document.getElementById("filters").innerHTML = opts.map(function (o) {
-    var n = o.id === "all" ? ITEMS.length : ITEMS.filter(function (a) { return a.group === o.id; }).length;
+    var n = cards.filter(function (c) { return (o.id === "all" || c.getAttribute("data-group") === o.id) && matches(c, words); }).length;
     return '<button type="button" data-f="' + o.id + '" aria-pressed="' + (o.id === active) + '">' + esc(o.label) + ' <span class="n">' + n + '</span></button>';
   }).join("");
 }
 function applyFilter() {
-  var q = document.getElementById("q").value.trim().toLowerCase(), shown = 0;
+  var raw = qBox.value.trim(), words = terms(raw), shown = 0, hiddenByGroup = 0;
   document.querySelectorAll("#list .tool").forEach(function (c) {
-    var ok = (active === "all" || c.getAttribute("data-group") === active) && (!q || c.getAttribute("data-search").indexOf(q) !== -1);
+    var a = ITEMS[+c.getAttribute("data-i")], hit = matches(c, words);
+    var ok = hit && (active === "all" || c.getAttribute("data-group") === active);
+    if (hit && !ok) hiddenByGroup++;
     c.hidden = !ok; if (ok) shown++;
+    c.querySelector("h3").innerHTML = mark(a.name, words);
+    c.querySelector(".desc").innerHTML = mark(a.desc, words);
   });
-  document.getElementById("empty").hidden = shown !== 0;
+  var res = document.getElementById("result");
+  res.hidden = !words.length;
+  if (words.length) {
+    res.innerHTML = (shown ? "<strong>" + shown + "</strong> tool" + (shown === 1 ? "" : "s") + " match" + (shown === 1 ? "es" : "") : (hiddenByGroup ? "Nothing in this category matches" : "No tools match")) +
+      " &ldquo;" + esc(raw) + "&rdquo;" +
+      (hiddenByGroup ? " &middot; <strong>" + hiddenByGroup + "</strong> " + (shown ? "more " : "") + "in other categories <button type=\"button\" class=\"linkbtn\" data-all>show all</button>" : "") +
+      " &middot; <button type=\"button\" class=\"linkbtn\" data-clear>clear</button>";
+  }
+  document.getElementById("empty").hidden = shown !== 0 || hiddenByGroup !== 0;
+  renderFilters();
 }
+function setQuery(v, from) {
+  if (from !== qBox) qBox.value = v;
+  if (tqBox && from !== tqBox) tqBox.value = v;
+  applyFilter();
+}
+function toolsInView() { var r = document.getElementById("tools").getBoundingClientRect(); return r.top < window.innerHeight * 0.6 && r.bottom > 120; }
 document.getElementById("list").innerHTML = ITEMS.map(card).join("");
-renderFilters(); applyFilter();
+try { var startQ = new URLSearchParams(location.search).get("q"); if (startQ) { qBox.value = startQ; if (tqBox) tqBox.value = startQ; } } catch (err) {}
+applyFilter();
+if (qBox.value) document.getElementById("tools").scrollIntoView();
 
 document.getElementById("filters").addEventListener("click", function (e) {
   var b = e.target.closest("[data-f]"); if (!b) return;
-  active = b.getAttribute("data-f"); renderFilters(); applyFilter();
+  active = b.getAttribute("data-f"); applyFilter();
 });
-document.getElementById("q").addEventListener("input", applyFilter);
+qBox.addEventListener("input", function () { setQuery(qBox.value, qBox); });
+if (tqBox) tqBox.addEventListener("input", function () {
+  setQuery(tqBox.value, tqBox);
+  if (tqBox.value && !toolsInView()) document.getElementById("tools").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+});
+[qBox, tqBox].forEach(function (b) {
+  if (b) b.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { setQuery("", null); b.blur(); }
+    if (e.key === "Enter") { var first = document.querySelector("#list .tool:not([hidden]) .btn-primary, #list .tool:not([hidden]) input"); if (first) first.focus(); }
+  });
+});
+document.addEventListener("click", function (e) {
+  if (e.target.closest("[data-clear]")) { setQuery("", null); qBox.focus(); }
+  if (e.target.closest("[data-all]")) { active = "all"; applyFilter(); }
+});
+// "/" jumps to search from anywhere on the page
+document.addEventListener("keydown", function (e) {
+  if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+  var t = e.target; if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+  e.preventDefault();
+  if (tqBox && tqBox.offsetParent !== null) tqBox.focus();
+  else { document.getElementById("tools").scrollIntoView(); qBox.focus(); }
+});
 document.getElementById("list").addEventListener("click", function (e) {
   var t = e.target.closest("[data-meta]");
   if (t) {
