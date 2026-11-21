@@ -359,12 +359,12 @@ footer a:hover { color: var(--fg); }
       <div class="section-head"><div><h2 id="faq-h">Questions</h2></div></div>
       <div class="faq">
         <div>
-          <details><summary>Where are the files installed?</summary><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit, File Renamer Pro and SD Labeller go to <code>%LOCALAPPDATA%\Programs</code>. Struct Helper PC is portable and runs from wherever you unzip it.</p></details>
+          <details><summary>Where are the files installed?</summary><p>Revit add-ins go to <code>%APPDATA%\Autodesk\Revit\Addins\&lt;year&gt;</code>. The ETABS Toolkit, File Renamer Pro, SD Labeller and Lisp Injector go to <code>%LOCALAPPDATA%\Programs</code>. Struct Helper PC is portable and runs from wherever you unzip it.</p></details>
           <details><summary>How do I update a tool?</summary><p>Download the newer setup file and run it over the old version. Your activation key and settings are kept.</p></details>
           <details><summary>How do I remove a tool?</summary><p>Open Windows Settings, then Apps, then Installed apps. Find the SADA tool and choose Uninstall. Close Revit first.</p></details>
         </div>
         <div>
-          <details><summary>Which tools need an activation key?</summary><p>Struct, Steel and Arch are activated separately. The Parapet Tool uses the Struct key. The ETABS Toolkit, File Renamer Pro, SD Labeller and the Struct Helper apps need no key.</p></details>
+          <details><summary>Which tools need an activation key?</summary><p>Struct, Steel and Arch are activated separately. The Parapet Tool uses the Struct key. The ETABS Toolkit, File Renamer Pro, SD Labeller, Lisp Injector and the Struct Helper apps need no key.</p></details>
           <details><summary>Why does Windows SmartScreen warn me?</summary><p>SmartScreen warns about setup files that are not yet widely downloaded. Choose More info, then Run anyway. You can confirm the file is genuine by checking its SHA-256, shown under Install details on each tool.</p></details>
           <details><summary>How do I check a download?</summary><p>In PowerShell run <code>Get-FileHash .\SetupFile.exe</code>. The hash it prints must match the SHA-256 listed for that tool.</p></details>
         </div>
@@ -397,6 +397,7 @@ var ICONS = {
   download: '<path d="M12 3v11m0 0l-4.5-4.5M12 14l4.5-4.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
 };
 ICONS.sdlabel = '<path d="M9 3v18M3 9h18" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2.5 2" stroke-linecap="round"/><rect x="6.5" y="6.5" width="5" height="5" stroke="currentColor" stroke-width="1.8"/><rect x="12" y="14" width="9" height="6" rx="1" stroke="currentColor" stroke-width="1.8"/>';
+ICONS.lisp = '<path d="M8 4l7.5 16M11.5 11.5L6 20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.5 3l1.1 2.2 2.4.4-1.7 1.7.4 2.4-2.2-1.1-2.2 1.1.4-2.4-1.7-1.7 2.4-.4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>';
 var GROUPS = [
   { id: "revit", label: "Revit add-ins" },
   { id: "analysis", label: "Analysis" },
@@ -427,6 +428,10 @@ var ITEMS = [
     desc: "Writes the SD sheet number under every column on a tower key plan. Reads the column tables straight from the SD sheet PDFs, matches each row to the grids and columns of the key plan, and makes one AutoLISP command that places all the texts. Anything doubtful goes on a separate red layer to check.",
     compat: ["Windows 10 / 11", "AutoCAD 2023+"], where: "%LOCALAPPDATA%\\Programs\\SADA SD Labeller",
     sha: "d7ad810bd8154a083de322450d01b87721666ffaacf416811cfd5f1c93e785d7", badge: "New" },
+  { name: "SADA Lisp Injector", group: "apps", icon: "lisp", kind: "Windows app for AutoCAD LISP", file: "SADA_Lisp_Injector_Setup.exe", size: "2.0 MB", version: "1.0.0",
+    desc: "Point it at your LISP folders to search every routine by name, command or what it does. Each file gets a plain-language description read from its code, and risky files such as LISP viruses are flagged. Star your favourites and they load into every drawing you open.",
+    compat: ["Windows 10 / 11", "AutoCAD 2013+"], where: "%LOCALAPPDATA%\\Programs\\SADA Lisp Injector",
+    sha: "89a121f7726da2378fb032c3d9377144519f2e04da34ba958b1bf36653f2d08b", badge: "New" },
   { name: "SADA Struct Helper PC", group: "apps", icon: "calc", kind: "Windows app, portable", file: "SADA_Struct_Helper_PC_Portable.zip", size: "87.9 MB", version: "2.0.0", btn: "Download zip",
     desc: "Engineering calculator with equations, matrices, complex numbers and statistics, plus 26 structural tools for concrete, steel, foundations, loads and estimating. Unzip and run.",
     compat: ["Windows 10 / 11"], where: "Unzip anywhere and run \"SADAStruct Helper PC.exe\"",
