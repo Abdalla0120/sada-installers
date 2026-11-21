@@ -445,11 +445,11 @@ var ITEMS = [
     compat: ["Windows 10 / 11", "Chrome / Edge / Firefox"], where: "%LOCALAPPDATA%\\Programs\\SADA Download",
     sha: "0c86340615aafdb6b8dfc31f417d83c5a51d5241a1b9e1b354da2491f59e1b52", badge: "New",
     locked: { enc: "dl/SADA_Download_Setup.exe.sada", source: "dl/SADA_Download_source_0.5.2.zip.sada", sourceName: "SADA_Download_source_0.5.2.zip" } },
-  { name: "SADA Download for Android", group: "apps", icon: "download", kind: "Android app", file: "SADA_Download_Android.apk", size: "66.1 MB", version: "0.1.2",
-    desc: "Fast downloads over many connections with resume, and a Chrome-style browser with ad and pop-up blocking that downloads videos from YouTube (choice of sound language), Facebook, Instagram, TikTok and more. Send to PC for SADA Download on Windows. Password needed to download.",
+  { name: "SADA Download for Android", group: "apps", icon: "download", kind: "Android app", file: "SADA_Download_Android.apk", size: "70.6 MB", version: "0.2.0",
+    desc: "Fast downloads over many connections with resume, speed limits and a schedule, and a Chrome-style browser with switchable ad, tracker, pop-up and cookie-notice blocking that downloads videos from YouTube (choice of sound language, playlists, subtitles, MP3), Facebook, Instagram, TikTok and more. Its own player, widget, app lock and Arabic. Send to PC for SADA Download on Windows. Password needed to download.",
     compat: ["Android 8+"], where: "Open the APK on your phone and allow \"Install unknown apps\"",
-    sha: "9b073a25d94b841a6c3bfb34464b732e18e46c112a091565eebcb64b48722be3", badge: "Updated",
-    locked: { enc: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return "dl/SADA_Download_Android_0.1.2.apk.sada." + n; }), source: "dl/SADA_Download_Android_source_0.1.2.zip.sada", sourceName: "SADA_Download_Android_source_0.1.2.zip" } }
+    sha: "1c15eb0ab5700f7f5e50c2b0a652aa8958534585b444a53429ca9e250f774e7d", badge: "Updated",
+    locked: { enc: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return "dl/SADA_Download_Android_0.2.0.apk.sada." + n; }), source: "dl/SADA_Download_Android_source_0.2.0.zip.sada", sourceName: "SADA_Download_Android_source_0.2.0.zip" } }
 ];
 var GROUP_LABEL = {}; GROUPS.forEach(function (g) { GROUP_LABEL[g.id] = g.label; });
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
