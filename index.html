@@ -621,21 +621,36 @@ function setQuery(v, from) {
   if (tqBox && from !== tqBox) tqBox.value = v;
   applyFilter();
 }
-function toolsInView() { var r = document.getElementById("tools").getBoundingClientRect(); return r.top < window.innerHeight * 0.6 && r.bottom > 120; }
+// Jump so the results sit just under the sticky top bar. Instant scrollTo (not smooth scrollIntoView):
+// inside the App Store's embedded Apps Script frame smooth scrolling did not move the page.
+function jumpToTools() {
+  var tools = document.getElementById("tools"), bar = document.querySelector(".topbar");
+  var off = tools.getBoundingClientRect().top - (bar ? bar.offsetHeight : 60) + 8;
+  if (Math.abs(off) < 40) return;
+  var before = window.scrollY;
+  window.scrollTo(0, before + off);
+  if (window.scrollY === before) { var se = document.scrollingElement || document.documentElement; se.scrollTop = before + off; }
+}
 document.getElementById("list").innerHTML = ITEMS.map(card).join("");
 try { var startQ = new URLSearchParams(location.search).get("q"); if (startQ) { qBox.value = startQ; if (tqBox) tqBox.value = startQ; } } catch (err) {}
+// the browser may refill either box after a reload: keep both showing the same query
+if (!qBox.value && tqBox && tqBox.value) qBox.value = tqBox.value;
+if (tqBox) tqBox.value = qBox.value;
 applyFilter();
-if (qBox.value) document.getElementById("tools").scrollIntoView();
+if (startQ) jumpToTools();
 
 document.getElementById("filters").addEventListener("click", function (e) {
   var b = e.target.closest("[data-f]"); if (!b) return;
   active = b.getAttribute("data-f"); applyFilter();
 });
 qBox.addEventListener("input", function () { setQuery(qBox.value, qBox); });
+var lastTop = "";
 if (tqBox) tqBox.addEventListener("input", function () {
+  var was = lastTop; lastTop = tqBox.value;
   setQuery(tqBox.value, tqBox);
-  if (tqBox.value && !toolsInView()) document.getElementById("tools").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  if (tqBox.value && !was) jumpToTools();   // first letter typed: show the results
 });
+if (tqBox) tqBox.addEventListener("keydown", function (e) { if (e.key === "Enter") jumpToTools(); });
 [qBox, tqBox].forEach(function (b) {
   if (b) b.addEventListener("keydown", function (e) {
     if (e.key === "Escape") { setQuery("", null); b.blur(); }
