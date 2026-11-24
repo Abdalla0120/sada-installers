@@ -469,11 +469,11 @@ var ITEMS = [
     compat: ["Windows 10 / 11", "Chrome / Edge / Firefox"], where: "%LOCALAPPDATA%\\Programs\\SADA Download",
     sha: "0c86340615aafdb6b8dfc31f417d83c5a51d5241a1b9e1b354da2491f59e1b52", badge: "New",
     locked: { enc: "dl/SADA_Download_Setup.exe.sada", source: "dl/SADA_Download_source_0.5.2.zip.sada", sourceName: "SADA_Download_source_0.5.2.zip" } },
-  { name: "SADA Download for Android", group: "apps", icon: "download", kind: "Android app", file: "SADA_Download_Android.apk", size: "70.6 MB", version: "0.2.0",
-    desc: "Fast downloads over many connections with resume, speed limits and a schedule, and a Chrome-style browser with switchable ad, tracker, pop-up and cookie-notice blocking that downloads videos from YouTube (choice of sound language, playlists, subtitles, MP3), Facebook, Instagram, TikTok and more. Its own player, widget, app lock and Arabic. Send to PC for SADA Download on Windows. Password needed to download.",
+  { name: "SADA Download for Android", group: "apps", icon: "download", kind: "Android app", file: "SADA_Download_Android.apk", size: "93.9 MB", version: "0.5.0",
+    desc: "Fast downloads over many connections with resume, groups, speed limits and a schedule, torrents, cloud links (Drive, Dropbox, MediaFire) and whole profiles, and a Chrome-style browser with ad, tracker, pop-up and video-ad blocking, saved passwords, tab groups and secure DNS that downloads videos from YouTube, Facebook, Instagram, TikTok, Telegram channels and more. Manga and webtoon chapters with a library and Arabic speech bubbles, an EPUB and PDF reader, podcasts, its own player with Watch together and Cast to TV, themes and Arabic. Password needed to download.",
     compat: ["Android 8+"], where: "Open the APK on your phone and allow \"Install unknown apps\"",
-    sha: "1c15eb0ab5700f7f5e50c2b0a652aa8958534585b444a53429ca9e250f774e7d", badge: "Updated",
-    locked: { enc: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return "dl/SADA_Download_Android_0.2.0.apk.sada." + n; }), source: "dl/SADA_Download_Android_source_0.2.0.zip.sada", sourceName: "SADA_Download_Android_source_0.2.0.zip" } }
+    sha: "30f76f4cba901aba3672b64c214d81fd4798a61228edb738575dd5aaeffc3925", badge: "Updated",
+    locked: { enc: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(function (n) { return "dl/SADA_Download_Android_0.5.0.apk.sada." + n; }), source: "dl/SADA_Download_Android_source_0.5.0.zip.sada", sourceName: "SADA_Download_Android_source_0.5.0.zip" } }
 ];
 // Extra search words per tool (features, file types and other words people type), not shown on the cards.
 var TAGS = {
@@ -488,7 +488,7 @@ var TAGS = {
   "SADA Struct Helper Android": "phone mobile apk calculator pdf reports ai gemini android",
   "File Renamer Pro": "rename renamer files drawings bulk batch sheet numbers parts undo preview",
   "SADA Download": "download manager downloader torrent video youtube resume browser extension chrome edge firefox",
-  "SADA Download for Android": "download manager downloader video youtube mp3 subtitles playlists ad blocker browser phone apk"
+  "SADA Download for Android": "download manager downloader video youtube mp3 subtitles playlists ad blocker browser phone apk torrent manga webtoon podcast epub pdf telegram drive mediafire"
 };
 var GROUP_LABEL = {}; GROUPS.forEach(function (g) { GROUP_LABEL[g.id] = g.label; });
 // lower-case, punctuation to spaces: "File-Renamer" and "file renamer" match the same way
